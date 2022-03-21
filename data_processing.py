@@ -100,5 +100,7 @@ def normalize_data(data):
     """
     Normalize each element of the data array
     """
-    for i in range(data.shape[0]):
-        data[i] = data[i] / np.amax(data)
+    res = data.copy()
+    for i in range(res.shape[0]):
+        res[i] = res[i] / np.amax(res)
+    return res
