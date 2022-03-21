@@ -54,7 +54,7 @@ def cross_validation_training(train_features,
         _, train_acc, train_f1, test_acc, test_f1 = training_simple(train_features,
                                                                     train_labels,
                                                                     test_features
-                                                                    test_labels
+                                                                    test_labels,
                                                                     C)
         training_accuracies.append(train_acc)
         training_f1_scores.append(train_f1)
