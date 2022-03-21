@@ -43,7 +43,8 @@ def cross_validation_training(train_features,
                                 Cs=[0.1, 1, 5, 10, 20, 50, 100, 150, 200, 250, 300, 500, 1000, 2000, 5000, 10000]):
     """
     Test different values of C and returns the best value
-    according to the F1-score
+    according to the F1-score as well as associated test
+    F1-score
     """
     training_accuracies = []
     training_f1_scores = []
@@ -71,5 +72,5 @@ def cross_validation_training(train_features,
     ax2.set_title("F1-scores over $C$ parameter")
     ax2.legend()
     plt.show()
-    return Cs[np.argmax(test_f1_scores)]
+    return Cs[np.argmax(test_f1_scores)], np.amax(test_f1_scores)
 
