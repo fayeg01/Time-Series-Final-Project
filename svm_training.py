@@ -9,10 +9,10 @@ def training_simple(train_features,
                         test_labels,
                         C=200,
                         verbose=True):
-    clf = SVC(C=1,
+    clf = SVC(C=C,
           kernel='rbf',
           tol=1e-3,
-          verbose=True,
+          verbose=verbose,
           max_iter=-1)
     clf.fit(train_features, train_labels)
     training_predictions = clf.predict(train_features)
@@ -55,7 +55,8 @@ def cross_validation_training(train_features,
                                                                     train_labels,
                                                                     test_features,
                                                                     test_labels,
-                                                                    C)
+                                                                    C,
+                                                                    verbose=False)
         training_accuracies.append(train_acc)
         training_f1_scores.append(train_f1)
         test_accuracies.append(test_acc)
