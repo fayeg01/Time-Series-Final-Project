@@ -102,5 +102,5 @@ def normalize_data(data):
     """
     res = data.copy()
     for i in range(res.shape[0]):
-        res[i] = res[i] / np.amax(res)
+        res[i] = res[i] / np.amax(res[i])
     return res
