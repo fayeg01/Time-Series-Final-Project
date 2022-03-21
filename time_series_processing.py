@@ -33,14 +33,21 @@ def termination(iter, max_iter):
         return True
     return False
 
-def dict_learning(X_train, D_raw, max_iter=100):
+def dict_learning(X_train, labels_train, D_raw, max_iter=100):
     Xc_train = X_train.copy()
+    Xc_healthy = []
+    Xc_seizure = []
+    for i, label in enumerate(labels_train):
+        if label == 0:
+            Xc_healthy.append(Xc_train[i])
+        else:
+            Xc_seizure.append(Xc_train[i])
     Dc_raw = D_raw.copy()
-    K, N = X_train.shape
-    M, N = D_raw.shape
+    K_healthy, N = Xc_healthy.shape
+    K_seizure, N = Xc_seizure.shape
     Dc_train = []
-    for i in range(max_iter):
-        Xc = Xc_train[i % K]
+    for i in range(int(max_iter/2)):
+        Xc = Xc_healthy[i % K_healthy]
         alphas = []
         for atom in Dc_raw:
             alphas.append(np.abs(Xc.dot(atom)))
@@ -48,7 +55,16 @@ def dict_learning(X_train, D_raw, max_iter=100):
         Dc_train.append(Dc_raw[best_index].copy())
         rx = Xc - alphas[best_index] * Dc_raw[best_index]
         Dc_raw[best_index] = np.zeros_like(Dc_raw[best_index])
-        Xc_train[i % K] = rx
+        Xc_healthy[i % K_healthy] = rx
+        Xc = Xc_seizure[i % K_seizure]
+        alphas = []
+        for atom in Dc_raw:
+            alphas.append(np.abs(Xc.dot(atom)))
+        best_index = np.argmax(alphas)
+        Dc_train.append(Dc_raw[best_index].copy())
+        rx = Xc - alphas[best_index] * Dc_raw[best_index]
+        Dc_raw[best_index] = np.zeros_like(Dc_raw[best_index])
+        Xc_seizure[i % K_seizure] = rx
         if termination(i, max_iter):
             break
     return Dc_train
