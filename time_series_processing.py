@@ -79,6 +79,8 @@ def dict_learningV2(X_train, labels_train, D_raw, max_iter=100):
         else:
             Xc_seizure.append(Xc_train[i])
     Dc_raw = D_raw.copy()
+    Xc_healthy = np.array(Xc_healthy)
+    Xc_seizure = np.array(Xc_seizure)
     K_healthy, N = Xc_healthy.shape
     K_seizure, N = Xc_seizure.shape
     Dc_train = []
@@ -108,7 +110,7 @@ def dict_learningV2(X_train, labels_train, D_raw, max_iter=100):
             rx = Xc - alphas[best_index] * Dc_raw[best_index]
             Xc_seizure[i % K_seizure] = rx
         Dc_raw[best_index] = np.zeros_like(Dc_raw[best_index])
-        
+
         if termination(i, max_iter):
             break
     return Dc_train
