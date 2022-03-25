@@ -8,10 +8,11 @@ def training_simple(train_features,
                         test_features,
                         test_labels,
                         C=200,
+                        tol=1e-3,
                         verbose=True):
     clf = SVC(C=C,
           kernel='rbf',
-          tol=1e-3,
+          tol=tol,
           verbose=verbose,
           max_iter=-1)
     clf.fit(train_features, train_labels)
@@ -40,6 +41,7 @@ def cross_validation_training(train_features,
                                 train_labels,
                                 test_features,
                                 test_labels,
+                                tol=1e-10,
                                 Cs=[0.1, 1, 5, 10, 20, 50, 100, 150, 200, 250, 300, 500, 1000, 2000, 5000, 10000]):
     """
     Test different values of C and returns the best value
@@ -56,6 +58,7 @@ def cross_validation_training(train_features,
                                                                     test_features,
                                                                     test_labels,
                                                                     C_to_test,
+                                                                    tol=tol,
                                                                     verbose=False)
         training_accuracies.append(train_acc)
         training_f1_scores.append(train_f1)
