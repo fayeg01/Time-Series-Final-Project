@@ -8,13 +8,13 @@ def training_simple(train_features,
                         test_features,
                         test_labels,
                         C=200,
-                        tol=1e-3,
+                        tol=1e-17,
                         verbose=True):
     clf = SVC(C=C,
           kernel='rbf',
           tol=tol,
-          verbose=verbose,
-          max_iter=-1)
+          verbose=False,
+          max_iter=10000000)
     clf.fit(train_features, train_labels)
     training_predictions = clf.predict(train_features)
     test_predictions = clf.predict(test_features)
