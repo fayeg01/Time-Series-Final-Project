@@ -115,6 +115,64 @@ def dict_learningV2(X_train, labels_train, D_raw, max_iter=100):
             break
     return Dc_train
 
+def dict_learningV3(X_train, labels_train, D_raw, max_iter=100):
+    Xc_train = X_train.copy()
+    Xc_healthy = []
+    Xc_seizure = []
+    for i, label in enumerate(labels_train):
+        if label == 0:
+            Xc_healthy.append(Xc_train[i])
+        else:
+            Xc_seizure.append(Xc_train[i])
+    Dc_raw = D_raw.copy()
+    Xc_healthy = np.array(Xc_healthy)
+    Xc_seizure = np.array(Xc_seizure)
+    K_healthy, N = Xc_healthy.shape
+    K_seizure, N = Xc_seizure.shape
+    Dc_train = []
+    for i in range(int(max_iter/2)):
+        best_alpha_so_far = 0
+        best_index_so_far = 0
+        best_i = 0
+        for i in range(75):
+            Xc = Xc_healthy[i % K_healthy]
+            alphas = np.zeros(Dc_raw.shape[0])
+            for atom in Dc_raw:
+                alphas[i] = np.abs(Xc.dot(atom))
+            best_alpha = np.amax(alphas)
+            if best_alpha > best_alpha_so_far:
+                best_index_so_far = np.argmax(alphas)
+                best_alpha_so_far = best_alpha
+                best_i = i
+        Dc_train.append(Dc_raw[best_index_so_far].copy())
+        Xc = Xc_healthy[best_i % K_healthy]
+        rx = Xc - best_alpha_so_far * Dc_raw[best_index_so_far]
+        Xc_healthy[best_i % K_healthy] = rx
+        Dc_raw[best_index_so_far] = np.zeros_like(Dc_raw[best_index_so_far])
+
+        best_alpha_so_far = 0
+        best_index_so_far = 0
+        best_i = 0
+        for i in range(75):
+            Xc = Xc_seizure[i % K_seizure]
+            alphas = np.zeros(Dc_raw.shape[0])
+            for atom in Dc_raw:
+                alphas[i] = np.abs(Xc.dot(atom))
+            best_alpha = np.amax(alphas)
+            if best_alpha > best_alpha_so_far:
+                best_index_so_far = np.argmax(alphas)
+                best_alpha_so_far = best_alpha
+                best_i = i
+        Dc_train.append(Dc_raw[best_index_so_far].copy())
+        Xc = Xc_seizure[best_i % K_seizure]
+        rx = Xc - best_alpha_so_far * Dc_raw[best_index_so_far]
+        Xc_seizure[best_i % K_seizure] = rx
+        Dc_raw[best_index_so_far] = np.zeros_like(Dc_raw[best_index_so_far])
+
+        if termination(i, max_iter):
+            break
+    return Dc_train
+
 def create_feature_sample(sample, D_train):
     features = []
     for element in D_train:
